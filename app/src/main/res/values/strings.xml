@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">NSDService</string>
+
+    <string name="app_name">NSD Service</string>
+
+    <string name="connect">Connect</string>
+    <string name="discover">Discover</string>
+    <string name="register">Register</string>
+    <string name="send">Send</string>
+
 </resources>
