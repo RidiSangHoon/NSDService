@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class NsdChatActivity extends Activity {
 
@@ -21,7 +22,6 @@ public class NsdChatActivity extends Activity {
 
     ChatConnection mConnection;
 
-    /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +29,7 @@ public class NsdChatActivity extends Activity {
         mStatusView = (TextView) findViewById(R.id.status);
 
         mUpdateHandler = new Handler() {
-                @Override
+            @Override
             public void handleMessage(Message msg) {
                 String chatLine = msg.getData().getString("msg");
                 addChatLine(chatLine);
@@ -45,15 +45,26 @@ public class NsdChatActivity extends Activity {
 
     public void clickAdvertise(View v) {
         // Register service
-        if(mConnection.getLocalPort() > -1) {
-            mNsdHelper.registerService(mConnection.getLocalPort());
+        if (mConnection.getLocalPort() > -1) {
+            try {
+                mNsdHelper.registerService(mConnection.getLocalPort());
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(NsdChatActivity.this, "이미 리스너가 등록되어 있습니다.", Toast.LENGTH_SHORT)
+                        .show();
+            }
         } else {
             Log.d(TAG, "ServerSocket isn't bound.");
         }
     }
 
     public void clickDiscover(View v) {
-        mNsdHelper.discoverServices();
+        try {
+            mNsdHelper.discoverServices();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(NsdChatActivity.this, "이미 리스너가 등록되어 있습니다.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void clickConnect(View v) {
@@ -89,15 +100,7 @@ public class NsdChatActivity extends Activity {
         }
         super.onPause();
     }
-    
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mNsdHelper != null) {
-            mNsdHelper.discoverServices();
-        }
-    }
-    
+
     @Override
     protected void onDestroy() {
         mNsdHelper.tearDown();
