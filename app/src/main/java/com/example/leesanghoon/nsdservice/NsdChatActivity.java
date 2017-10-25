@@ -48,6 +48,7 @@ public class NsdChatActivity extends Activity {
         if (mConnection.getLocalPort() > -1) {
             try {
                 mNsdHelper.registerService(mConnection.getLocalPort());
+                Toast.makeText(NsdChatActivity.this,"REGISTER SUCCESS",Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(NsdChatActivity.this, "이미 리스너가 등록되어 있습니다.", Toast.LENGTH_SHORT)
@@ -61,6 +62,7 @@ public class NsdChatActivity extends Activity {
     public void clickDiscover(View v) {
         try {
             mNsdHelper.discoverServices();
+            Toast.makeText(NsdChatActivity.this,"DISCOVER SUCCESS",Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(NsdChatActivity.this, "이미 리스너가 등록되어 있습니다.", Toast.LENGTH_SHORT).show();
@@ -96,15 +98,23 @@ public class NsdChatActivity extends Activity {
     @Override
     protected void onPause() {
         if (mNsdHelper != null) {
-            mNsdHelper.stopDiscovery();
+            try {
+                mNsdHelper.stopDiscovery();
+            }catch(Exception e) {
+                e.printStackTrace();
+            }
         }
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        mNsdHelper.tearDown();
-        mConnection.tearDown();
+        try {
+            mNsdHelper.tearDown();
+            mConnection.tearDown();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         super.onDestroy();
     }
 }
